@@ -14,6 +14,7 @@ Work.
 Basically, this
 ```python
 import colortransform as ct
+
 # int rgb to float. all processing is done in floats.
 color1: tuple = ct.RGBitof(100, 150, 200)
 print(color1)
