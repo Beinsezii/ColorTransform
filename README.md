@@ -10,6 +10,9 @@ No, it's really just a file of like 20 color conversion functions.
 ### Main Design Goals
 Work.
 
+### Future Goals
+Add sRGB <-> hex, functions to check clipping for different formats.
+
 ## Features
 Basically, this
 ```python
