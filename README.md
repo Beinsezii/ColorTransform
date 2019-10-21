@@ -34,7 +34,7 @@ print( ct.SRGBtoLCH(50.0, 30.0, 200.0) )
 Note it does no rounding, so a values will come out to python default level of decimal places.
 
 ### Experimental Features
-Algorithms were sourced from https://www.easyrgb.com/en/math.php, so they may not be optimal. New algorithm proposals welcome.
+Algorithms were sourced from https://www.easyrgb.com/en/math.php with results compared to other converters, so they may not be optimal. New algorithm proposals welcome.
 
 ## Development
 Will add more conversions if I need them.
