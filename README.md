@@ -2,7 +2,9 @@
 It's basically just a bunch of colorspace transformation algorithms stored in a .py file.
 
 ### Current Status
-Conversions between sRGB, linear RGB, CIE XYZ, CIE Lab, and CIE Lch are present.
+Conversions between sRGB (int, float, and hex), linear RGB, CIE XYZ, CIE Lab, and CIE Lch are present.
+
+Additional functions to check clipping are now also available.
 
 ## Description
 No, it's really just a file of like 20 color conversion functions.
@@ -11,7 +13,7 @@ No, it's really just a file of like 20 color conversion functions.
 Work.
 
 ### Future Goals
-Add sRGB <-> hex, functions to check clipping for different formats.
+HSL/HSV support.
 
 ## Features
 Basically, this

@@ -1,9 +1,57 @@
 #!/usr/bin/python3
 import math
+import re
 
 
 # All functions based off of the most 'standard' way. RGB = sRGB unless specified. CIE uses D65 @ 2 degrees
 # RGB is represented as 0.0...1.0 instead of 0...255. Use converters if necessary
+# Nothing checks for clipping by default. Clip checking functions provided.
+
+
+def HEXtoRGBi(Hex: str) -> tuple:
+    if not HEXvalid(Hex):
+        raise ValueError
+    Hex = Hex.lstrip('#').upper()
+
+    hexR = Hex[0:2]
+    hexG = Hex[2:4]
+    hexB = Hex[4:6]
+
+    rgb = [0, 0, 0]
+    for n, x in enumerate((hexR, hexG, hexB)):
+        # 16s place
+        if x[0].isalpha():
+            rgb[n] += (ord(x[0]) - 65 + 10) * 16
+        elif x[0].isdigit():
+            rgb[n] += int(x[0]) * 16
+        else:
+            print("This should be impossible.")
+            raise ValueError
+        # 1s place
+        if x[1].isalpha():
+            rgb[n] += (ord(x[1]) - 65 + 10)
+        elif x[1].isdigit():
+            rgb[n] += int(x[1])
+        else:
+            print("This should be impossible.")
+            raise ValueError
+
+    return tuple(rgb)
+
+
+# Exception to 'no clip check' rule, as any values outside 0..255 will produce an invalid hex.
+def RGBitoHEX(R: int, G: int, B: int) -> str:
+    if RGBiclip(R, G, B):
+        raise ValueError
+    Hex = "#"
+
+    for x in (R, G, B):
+        n1 = int(x / 16)
+        n2 = x % 16
+        for n in (n1, n2):
+            Hex += str(chr((n - 10) + 65) if n >= 10 else n)
+
+    return Hex
 
 
 # float RGB (0.0...1.0) to int RGB (0...255)
@@ -145,3 +193,47 @@ def SRGBtoLCH(R: float, G: float, B: float) -> tuple:
 
 def LCHtoSRGB(L: float, C: float, H: float) -> tuple:
     return LABtoSRGB(*LCHtoLAB(L, C, H))
+
+
+def RGBiclip(R: int, G: int, B: int) -> bool:
+    for x in (R, G, B):
+        if x > 255 or x < 0:
+            return True
+    return False
+
+
+def RGBfclip(R: float, G: float, B: float) -> bool:
+    for x in (R, G, B):
+        if x > 1.0 or x < 0.0:
+            return True
+    return False
+
+
+# Note, 'valid' returns true if acceptable.
+# Compared to 'clip' which returns true if values are outside a range
+def HEXvalid(Hex: str) -> bool:
+    return bool(re.fullmatch(r"#[0-9A-Fa-f]{6}", Hex))
+
+
+# I'm going to be honest I haven't read into the science of XYZ at all outside of how it's different from sRGB.
+# Therefore, omitting for now.
+def XYZclip(X: float, Y: float, Z: float) -> bool:
+    pass
+
+
+# For both LAB and LCH, I've read that clip vals aren't exactly 100, but I can't find much information on it.
+# If a good source is found with adequate reason to change, the clip vals will be updated
+def LABclip(L: float, A: float, B: float) -> bool:
+    for x in (L, A, B):
+        if x > 100.0 or x < 0.0:
+            return True
+    return False
+
+
+def LCHclip(L: float, C: float, H: float) -> bool:
+    for x in (L, C):
+        if x > 100.0 or x < 0.0:
+            return True
+    if H > 360.0 or H < 0.0:
+        return True
+    return False
