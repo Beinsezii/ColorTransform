@@ -2,7 +2,7 @@
 It's basically just a bunch of colorspace transformation algorithms stored in a .py file.
 
 ### Current Status
-Conversions between sRGB (int, float, and hex), linear RGB, CIE XYZ, CIE Lab, and CIE Lch are present.
+Conversions between sRGB (int, float, and hex), linear RGB, CIE XYZ, CIE Lab, and CIE Lch are present. Check file for internal names.
 
 Additional functions to check clipping are now also available.
 
@@ -20,8 +20,8 @@ Basically, this
 ```python
 import colortransform as ct
 
-# int rgb to float. all processing is done in floats.
-color1: tuple = ct.RGBitof(100, 150, 200)
+# int rgb to float rgb. all processing is done in floats.
+color1: tuple = ct.IRGBtoSRGB(100, 150, 200)
 print(color1)
 >(0.39, 0.58, 0.78)
 

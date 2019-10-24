@@ -7,8 +7,27 @@ import re
 # RGB is represented as 0.0...1.0 instead of 0...255. Use converters if necessary
 # Nothing checks for clipping by default. Clip checking functions provided.
 
+# Formats:
+# SRGB - Standard RGB
+# IRGB - Same as SRGB but uses ints (0...255 instead of 0.0...1.0)
+# HEX - Hex RGB. ie, "#FFAA00"
+# LRGB - RGB without gamma corrections, ie Linear RGB
+# XYZ - CIE XYZ format
+# LAB - CIE Lab format
+# LCH - CIE Lch "Lightness Chroma Hue" format. Personal favorite and initial reason for creating this module.
 
-def HEXtoRGBi(Hex: str) -> tuple:
+
+# int RGB to float RGB
+def IRGBtoSRGB(R: int, G: int, B: int) -> tuple:
+    return (R / 255, G / 255, B / 255)
+
+
+# float RGB (0.0...1.0) to int RGB (0...255)
+def SRGBtoIRGB(R: float, G: float, B: float) -> tuple:
+    return (int(round(R * 255)), int(round(G * 255)), int(round(B * 255)))
+
+
+def HEXtoIRGB(Hex: str) -> tuple:
     if not HEXvalid(Hex):
         raise ValueError
     Hex = Hex.lstrip('#').upper()
@@ -40,8 +59,8 @@ def HEXtoRGBi(Hex: str) -> tuple:
 
 
 # Exception to 'no clip check' rule, as any values outside 0..255 will produce an invalid hex.
-def RGBitoHEX(R: int, G: int, B: int) -> str:
-    if RGBiclip(R, G, B):
+def IRGBtoHEX(R: int, G: int, B: int) -> str:
+    if IRGBclip(R, G, B):
         raise ValueError
     Hex = "#"
 
@@ -52,16 +71,6 @@ def RGBitoHEX(R: int, G: int, B: int) -> str:
             Hex += str(chr((n - 10) + 65) if n >= 10 else n)
 
     return Hex
-
-
-# float RGB (0.0...1.0) to int RGB (0...255)
-def RGBftoi(R: float, G: float, B: float) -> tuple:
-    return (int(round(R * 255)), int(round(G * 255)), int(round(B * 255)))
-
-
-# int RGB to float RGB
-def RGBitof(R: int, G: int, B: int) -> tuple:
-    return (R / 255, G / 255, B / 255)
 
 
 # gamma corrected to linear
@@ -195,16 +204,17 @@ def LCHtoSRGB(L: float, C: float, H: float) -> tuple:
     return LABtoSRGB(*LCHtoLAB(L, C, H))
 
 
-def RGBiclip(R: int, G: int, B: int) -> bool:
+# In theory would also work for LRGB if needed in a pinch.
+def SRGBclip(R: float, G: float, B: float) -> bool:
     for x in (R, G, B):
-        if x > 255 or x < 0:
+        if x > 1.0 or x < 0.0:
             return True
     return False
 
 
-def RGBfclip(R: float, G: float, B: float) -> bool:
+def IRGBclip(R: int, G: int, B: int) -> bool:
     for x in (R, G, B):
-        if x > 1.0 or x < 0.0:
+        if x > 255 or x < 0:
             return True
     return False
 
@@ -223,6 +233,8 @@ def XYZclip(X: float, Y: float, Z: float) -> bool:
 
 # For both LAB and LCH, I've read that clip vals aren't exactly 100, but I can't find much information on it.
 # If a good source is found with adequate reason to change, the clip vals will be updated
+
+# In theory would also work XYZ if needed in a pinch
 def LABclip(L: float, A: float, B: float) -> bool:
     for x in (L, A, B):
         if x > 100.0 or x < 0.0:
