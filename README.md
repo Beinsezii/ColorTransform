@@ -30,7 +30,7 @@ print( ct.SRGBtoLAB(*color1) )
 >(60.5, -2.79, -30.9)
 
 # Lch into sRGB
-print( ct.SRGBtoLCH(50.0, 30.0, 200.0) )
+print( ct.LCHtoSRGB(50.0, 30.0, 200.0) )
 >(0.02, 0.51, 0.53)
 ```
 Note it does no rounding, so a values will come out to python default level of decimal places.
