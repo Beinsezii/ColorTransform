@@ -205,17 +205,21 @@ def LCHtoSRGB(L: float, C: float, H: float) -> tuple:
 
 
 # In theory would also work for LRGB if needed in a pinch.
-def SRGBclip(R: float, G: float, B: float) -> bool:
+def SRGBclip(R: float, G: float, B: float) -> tuple:
     for x in (R, G, B):
-        if x > 1.0 or x < 0.0:
-            return True
+        if x > 1.0:
+            return True, 1
+        elif x < 0.0:
+            return True, 0
     return False
 
 
 def IRGBclip(R: int, G: int, B: int) -> bool:
     for x in (R, G, B):
-        if x > 255 or x < 0:
-            return True
+        if x > 255:
+            return True, 1
+        elif x < 0:
+            return True, 0
     return False
 
 
@@ -237,15 +241,21 @@ def XYZclip(X: float, Y: float, Z: float) -> bool:
 # In theory would also work XYZ if needed in a pinch
 def LABclip(L: float, A: float, B: float) -> bool:
     for x in (L, A, B):
-        if x > 100.0 or x < 0.0:
-            return True
+        if x > 100.0:
+            return True, 1
+        elif x < 0.0:
+            return True, 0
     return False
 
 
 def LCHclip(L: float, C: float, H: float) -> bool:
     for x in (L, C):
-        if x > 100.0 or x < 0.0:
-            return True
-    if H > 360.0 or H < 0.0:
-        return True
+        if x > 100.0:
+            return True, 1
+        elif x < 0.0:
+            return True, 0
+    if H > 360.0:
+        return True, 1
+    elif H < 0.0:
+        return True, 0
     return False
